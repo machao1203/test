@@ -29,9 +29,9 @@ public class Test extends CordovaPlugin {
              
                      this.cordova.getActivity().startActivity(calIntent);*/
                Builder builder = new AlertDialog.Builder(this);
-			   builder.setTitle("测试！");
-			   builder.setMessage("测试成功！");
-			   builder.setPositiveButton("确定", null);
+			   builder.setTitle("test");
+			   builder.setMessage("test success");
+			   builder.setPositiveButton("OK", null);
 			   builder.show();      
                callbackContext.success();
                return true;
