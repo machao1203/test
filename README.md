@@ -1,10 +1,11 @@
-TEST
-==============
+SpeechSynthesisPlugin
+=====================
 
-Sample PhoneGap plugin to access and add entries to the native calendar on Android. 
+W3C Web Speech API - Speech synthesis plugin for PhoneGap
 
 Install
-========
-Assuming the PhoneGap CLI is installed, from the command line run:
+=================
 
-phonegap local plugin add https://github.com/hollyschinsky/CalendarPlugin
+Using the command line tools run:
+
+    phonegap local plugin add https://github.com/macdonst/SpeechSynthesisPlugin
