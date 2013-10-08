@@ -1,4 +1,4 @@
-CalendarPlugin
+TEST
 ==============
 
 Sample PhoneGap plugin to access and add entries to the native calendar on Android. 
