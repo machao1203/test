@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-           id="org.wdc.test"
+           id="org.wdc.toast"
       version="0.1.0">
-    <name>Test</name>
+    <name>ToastTest</name>
     <description>Sample PhoneGap Test Plugin</description>
     <license>MIT</license>
     <keywords>phonegap,test</keywords>
 
 
-    <js-module src="www/test.js" name="Test">
-    <clobbers target="Test"/>
+    <js-module src="www/Toast.js" name="Toast">
+    <clobbers target="Toast"/>
     </js-module>
 
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Test">
-                <param name="android-package" value="org.wdc.test.Test"/>
+            <feature name="Toast">
+                <param name="android-package" value="org.wdc.toast.ToastTest"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/Test.java" target-dir="src/org/wdc/test" />      
+        <source-file src="src/android/Toast.java" target-dir="src/org/wdc/toast" />      
      </platform>          
 </plugin>
