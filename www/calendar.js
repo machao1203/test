@@ -3,7 +3,7 @@ var calendar = {
         cordova.exec(
             successCallback, // success callback function
             errorCallback, // error callback function
-            'Calendar', // mapped to our native Java class called "CalendarPlugin"
+            'Test', // mapped to our native Java class called "CalendarPlugin"
             'addTestEntry' // with this action name
         ); 
     }
