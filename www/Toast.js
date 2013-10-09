@@ -1,4 +1,4 @@
-var toast = {
+/*var toast = {
     createEvent: function(msg,successCallback, errorCallback) {
         console.log('test3333333333333');
 		cordova.exec(
@@ -13,3 +13,20 @@ var toast = {
     }
 }
 module.exports = toast;
+*/
+var exec = require('cordova/exec');
+module.exports ={
+	 /**
+     * Open a native alert dialog, with a customizable title and button text.
+     *
+     * @param {String} message              Message to print in the body of the alert
+     * @param {Function} completeCallback   The callback that is called when user clicks on a button.
+     * @param {String} title                Title of the alert dialog (default: Alert)
+     * @param {String} buttonLabel          Label of the close button (default: OK)
+     */
+    alert: function(message, completeCallback, title, buttonLabel) {
+        var _title = (title || "Alert");
+        var _buttonLabel = (buttonLabel || "OK");
+        exec(completeCallback, null, "Notification", "alert", [message, _title, _buttonLabel]);
+    },
+	}
