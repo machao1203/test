@@ -10,7 +10,7 @@
 
 
     <js-module src="www/test.js" name="Test">
-    <clobbers target="Test">
+    <clobbers target="Test"/>
     </js-module>
 
     <!-- android -->
