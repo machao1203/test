@@ -12,14 +12,14 @@ public class ToastTest extends CordovaPlugin {
     
    @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-    if (ACTION_ADD_TEST_ENTRY.equals(action)) {
+    if (ACTION_ADD_TOAST_ENTRY.equals(action)) {
 		String msg = args.getString(0);
         Toast.makeText(this.cordova.getActivity(), msg,
 							Toast.LENGTH_SHORT).show();
 		callbackContext.success();
         return true;
     }
-	callbackContext.error('false');
+	callbackContext.error("false");
     return false;  // Returning false results in a "MethodNotFound" error.
 }
 }

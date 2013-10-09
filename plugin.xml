@@ -21,6 +21,6 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/Toast.java" target-dir="src/org/wdc/toast" />      
+        <source-file src="src/android/ToastTest.java" target-dir="src/org/wdc/toasttest" />      
      </platform>          
 </plugin>
