@@ -3,13 +3,14 @@
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
            id="org.wdc.test"
       version="0.1.0">
-    <name>Calendar</name>
+    <name>Test</name>
     <description>Sample PhoneGap Test Plugin</description>
     <license>MIT</license>
     <keywords>phonegap,test</keywords>
 
 
     <js-module src="www/test.js" name="Test">
+    <clobbers target="Test">
     </js-module>
 
     <!-- android -->
