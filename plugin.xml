@@ -4,13 +4,12 @@
            id="org.wdc.test"
       version="0.1.0">
     <name>Calendar</name>
-    <description>Sample PhoneGap Calendar Plugin</description>
+    <description>Sample PhoneGap Test Plugin</description>
     <license>MIT</license>
-    <keywords>phonegap,calendar</keywords>
+    <keywords>phonegap,test</keywords>
 
 
-    <js-module src="www/calendar.js" name="Calendar">
-        <clobbers target="window.calendar" />
+    <js-module src="www/test.js" name="Test">
     </js-module>
 
     <!-- android -->
