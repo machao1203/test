@@ -16,11 +16,11 @@
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Calendar">
-                <param name="android-package" value="org.wdc.test.Calendar"/>
+            <feature name="Test">
+                <param name="android-package" value="org.wdc.test.Test"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/Calendar.java" target-dir="src/org/wdc/test" />      
+        <source-file src="src/android/Test.java" target-dir="src/org/wdc/test" />      
      </platform>          
 </plugin>

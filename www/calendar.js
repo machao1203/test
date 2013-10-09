@@ -1,4 +1,4 @@
-var calendar = {
+var test = {
     createEvent: function(successCallback, errorCallback) {
         cordova.exec(
             successCallback, // success callback function
@@ -7,5 +7,5 @@ var calendar = {
             'addTestEntry' // with this action name
         ); 
     }
-}
-module.exports = calendar;
+};
+module.exports = test;
