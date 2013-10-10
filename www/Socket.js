@@ -24,6 +24,6 @@ module.exports ={
      * @param {String} title                Title of the alert dialog (default: Alert)
      * @param {String} buttonLabel          Label of the close button (default: OK)
      */
-    socket_connect: function(completeCallback) {
-        exec(completeCallback, null, "socket", "connect", []);
+    socket_connect: function() {
+        exec(null, null, "socket", "connect", []);
     });

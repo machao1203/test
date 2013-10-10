@@ -10,7 +10,6 @@
 
 
     <js-module src="www/Socket.js" name="Socket">
-    <clobbers target="chrome.socket"/> 
     </js-module>
 
     <!-- android -->
