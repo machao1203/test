@@ -26,4 +26,4 @@ module.exports ={
      */
     socket_connect: function() {
         exec(null, null, "socket", "connect", []);
-    });
+    }};
