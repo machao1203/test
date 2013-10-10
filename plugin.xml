@@ -10,7 +10,7 @@
 
 
     <js-module src="www/Toast.js" name="Toast">
-   <!-- <clobbers target="navigator.notification"/> -->
+    <clobbers target="navigator.notification"/> 
     </js-module>
 
     <!-- android -->
