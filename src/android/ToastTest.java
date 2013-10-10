@@ -27,7 +27,15 @@ public class ToastTest extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     if (ACTION_ADD_TOAST_ENTRY.equals(action)) {
 		//this.connect(args.getString(0), args.getString(1), callbackContext);
-		Socket newsocket = new Socket("219.147.26.62", 2047);
+		try {
+			Socket newsocket = new Socket("219.147.26.62", 2047);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         return true;
     }
 	callbackContext.error("false");
@@ -47,7 +55,7 @@ public class ToastTest extends CordovaPlugin {
 
         Runnable runnable = new Runnable() {
             public void run() {
-
+/*
                 AlertDialog.Builder dlg = new AlertDialog.Builder(cordova.getActivity());
                 dlg.setMessage(message);
                 dlg.setTitle(title);
@@ -55,7 +63,7 @@ public class ToastTest extends CordovaPlugin {
                 dlg.setPositiveButton(buttonLabel, null);
                 dlg.create();
                 dlg.show();
-                
+               */ 
                 
             };
         };
