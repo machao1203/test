@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-           id="org.wdc.toast"
+           id="org.wdc.Socket"
       version="0.1.0">
-    <name>ToastTest</name>
-    <description>Sample PhoneGap Test Plugin</description>
+    <name>socket</name>
+    <description>Sample PhoneGap socket Plugin</description>
     <license>MIT</license>
-    <keywords>phonegap,test</keywords>
+    <keywords>phonegap,socket</keywords>
 
 
-    <js-module src="www/Toast.js" name="Toast">
-    <clobbers target="window.socket"/> 
+    <js-module src="www/Socket.js" name="Socket">
+    <clobbers target="chrome.socket"/> 
     </js-module>
 
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Toast">
-                <param name="android-package" value="org.wdc.toast.ToastTest"/>
+            <feature name="Socket">
+                <param name="android-package" value="org.wdc.Socket.socket"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/ToastTest.java" target-dir="src/org/wdc/toasttest" />      
+        <source-file src="src/android/Socket.java" target-dir="src/org/wdc/socket" />      
      </platform>          
 </plugin>
