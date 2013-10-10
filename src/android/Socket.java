@@ -1,4 +1,4 @@
-package org.wdc.Socket;
+package org.wdc.socket;
  
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;

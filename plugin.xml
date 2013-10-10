@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
-           id="org.wdc.Socket"
+           id="org.wdc.socket"
       version="0.1.0">
     <name>socket</name>
     <description>Sample PhoneGap socket Plugin</description>
@@ -17,10 +17,10 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Socket">
-                <param name="android-package" value="org.wdc.Socket.socket"/>
+                <param name="android-package" value="org.wdc.socket.socket"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/Socket.java" target-dir="src/org/wdc/socket" />      
+        <source-file src="src/android/socket.java" target-dir="src/org/wdc/socket" />      
      </platform>          
 </plugin>
