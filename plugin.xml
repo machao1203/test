@@ -9,7 +9,8 @@
     <keywords>phonegap,socket</keywords>
 
 
-    <js-module src="www/Socket.js" name="Socket">
+    <js-module src="www/Socket.js" name="socket">
+         <clobbers target="chrome.socket" />
     </js-module>
 
     <!-- android -->
@@ -20,6 +21,10 @@
             </feature>
         </config-file>
 
-        <source-file src="src/android/socket.java" target-dir="src/org/wdc/socket" />      
+        <source-file src="src/android/socket.java" target-dir="src/org/wdc/socket" />    
+
+          <js-module src="www/android/Socket.js" name="socket_android">
+             <clobbers target="chrome.socket" />
+         </js-module>
      </platform>          
 </plugin>
