@@ -28,5 +28,4 @@ module.exports ={
         var _title = (title || "Alert");
         var _buttonLabel = (buttonLabel || "OK");
         exec(completeCallback, null, "Notification", "alert", [message, _title, _buttonLabel]);
-    },
-	}
+    });
