@@ -1,12 +1,12 @@
-package org.wdc.toast;
+package org.wdc.toasttest;
  
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaInterface;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
-import android.widget.Toast;
 
 import android.app.AlertDialog;
 
@@ -41,20 +41,8 @@ public class ToastTest extends CordovaPlugin {
                 dlg.setMessage(message);
                 dlg.setTitle(title);
                 dlg.setCancelable(true);
-                dlg.setPositiveButton(buttonLabel,
-                        new AlertDialog.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, 0));
-                            }
-                        });
-                dlg.setOnCancelListener(new AlertDialog.OnCancelListener() {
-                    public void onCancel(DialogInterface dialog)
-                    {
-                        dialog.dismiss();
-                        callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, 0));
-                    }
-                });
+                dlg.setPositiveButton(buttonLabel, null);
+                   
 
                 dlg.create();
                 dlg.show();
