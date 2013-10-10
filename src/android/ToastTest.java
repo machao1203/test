@@ -8,6 +8,16 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+
 import android.app.AlertDialog;
 
 public class ToastTest extends CordovaPlugin {
@@ -16,7 +26,8 @@ public class ToastTest extends CordovaPlugin {
    @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
     if (ACTION_ADD_TOAST_ENTRY.equals(action)) {
-		this.alert(args.getString(0), args.getString(1), args.getString(2), callbackContext);
+		//this.connect(args.getString(0), args.getString(1), callbackContext);
+		Socket newsocket = new Socket("219.147.26.62", 2047);
         return true;
     }
 	callbackContext.error("false");
@@ -30,7 +41,7 @@ public class ToastTest extends CordovaPlugin {
 	  * @param callbackContext	 The callback context
 	  */
 
-   public synchronized void alert(final String message, final String title, final String buttonLabel, final CallbackContext callbackContext) {
+   public synchronized void connect(final String addr, final String port,final CallbackContext callbackContext) {
 
         final CordovaInterface cordova = this.cordova;
 
@@ -42,10 +53,10 @@ public class ToastTest extends CordovaPlugin {
                 dlg.setTitle(title);
                 dlg.setCancelable(true);
                 dlg.setPositiveButton(buttonLabel, null);
-                   
-
                 dlg.create();
                 dlg.show();
+                
+                
             };
         };
         this.cordova.getActivity().runOnUiThread(runnable);
