@@ -16,7 +16,7 @@
     <!-- android -->
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="Socket">
+            <feature name="socket">
                 <param name="android-package" value="org.wdc.socket.socket"/>
             </feature>
         </config-file>
