@@ -23,8 +23,5 @@
 
         <source-file src="src/android/socket.java" target-dir="src/org/wdc/socket" />    
 
-          <js-module src="www/android/Socket.js" name="socket_android">
-             <clobbers target="chrome.socket" />
-         </js-module>
      </platform>          
 </plugin>
