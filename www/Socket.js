@@ -12,5 +12,9 @@ module.exports ={
     {
         console.log('socket send');
         exec(null, null, "socket", "send", [msg]);
+    },
+    socket_poll:function(successCallBack){
+    	console.log('socket poll');
+    	exec(successCallBack, null, "socket", "rollpoling", []);
     }
     };
