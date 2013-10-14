@@ -23,34 +23,30 @@ public class socket extends CordovaPlugin {
 	BufferedReader in = null;
 	Socket newsocket;
 	boolean mstop;
-	String content = "",msg_send;
-	List Recv_msgs  = new ArrayList();
+	String content = "", msg_send;
+	List<String> Recv_msgs_list = new ArrayList<String>();
+
 	@Override
 	public boolean execute(String action, JSONArray args,
 			CallbackContext callbackContext) throws JSONException {
 		if (action.equals("connect")) {
 			this.socket_connect(callbackContext);
 			return true;
-		}
-		else if (action.equals("close")) {
+		} else if (action.equals("close")) {
 			Log.w("socket", "socket will close");
 			mstop = false;
 			return true;
-		}
-		else if (action.equals("send")) {
+		} else if (action.equals("send")) {
 			msg_send = args.getString(0);
-			this.socket_send();
+			this.socket_send(callbackContext);
 			return true;
-		}	
-		else if(action.equals("rollpoling"))
-		{
+		} else if (action.equals("rollpoling")) {
 			Log.w("socket", "socket poll111111111111");
-			if(Recv_msgs.size() > 0)
-			{
+			if (Recv_msgs_list.size() > 0) {
 				Log.w("socket", "socket poll222222222222");
-				String msg = (String) Recv_msgs.get(0);
+				String msg = (String) Recv_msgs_list.get(0);
 				callbackContext.success(msg);
-				Recv_msgs.remove(0);
+				Recv_msgs_list.remove(0);
 				return true;
 			}
 		}
@@ -77,31 +73,29 @@ public class socket extends CordovaPlugin {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				while(mstop)
-				{
-					try {
-						content = null;
-						content = in.readLine();
-						if(content != null)
-						{
-							Log.e("socket", content);
-							Recv_msgs.add(content);
+				if (newsocket != null) {
+					callbackContext.success();
+					while (mstop) {
+						try {
+							content = null;
+							content = in.readLine();
+							if (content != null) {
+								Log.e("socket", content);
+								Recv_msgs_list.add(content);
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					Log.e("socket", "null");
-				}
-				Log.e("socket", "mstop is false ");
-				if(newsocket != null)
-				{
+					Log.e("socket", "mstop is false ");
+
 					try {
 						in.close();
 						out.close();
@@ -112,15 +106,22 @@ public class socket extends CordovaPlugin {
 						e.printStackTrace();
 					}
 				}
-				
+				else
+				{
+					callbackContext.error("");
+				}
+
 			}
 		});
 	}
-	public void socket_send() {
+
+	public void socket_send(final CallbackContext callbackContext) {
 		this.cordova.getThreadPool().execute(new Runnable() {
 			public void run() {
 				try {
 					out.write(msg_send.getBytes("utf-8"));
+					callbackContext.success();
+					return;
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -128,6 +129,7 @@ public class socket extends CordovaPlugin {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				callbackContext.error(0);
 			}
 		});
 	}
