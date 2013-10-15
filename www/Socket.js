@@ -4,9 +4,9 @@ module.exports ={
     	console.log('123456787654321');
         exec(successCallBack, errorCallBack, "socket", "connect", []);
     },
-    socket_close: function() {
+    socket_close: function(successCallBack) {
     	console.log('socket close');
-        exec(null, null, "socket", "close", []);
+        exec(successCallBack, null, "socket", "close", []);
     },
     socket_send:function(successCallBack,errorCallBack,msg)
     {
@@ -14,7 +14,6 @@ module.exports ={
         exec(successCallBack, errorCallBack, "socket", "send", [msg]);
     },
     socket_poll:function(successCallBack){
-    	console.log('socket poll');
     	exec(successCallBack, null, "socket", "rollpoling", []);
     }
     };});

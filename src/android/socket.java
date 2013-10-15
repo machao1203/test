@@ -23,7 +23,7 @@ public class socket extends CordovaPlugin {
 	BufferedReader in = null;
 	Socket newsocket;
 	boolean mstop;
-	String content = "", msg_send;
+	String content = null, msg_send;
 	List<String> Recv_msgs_list = new ArrayList<String>();
 
 	@Override
@@ -35,6 +35,7 @@ public class socket extends CordovaPlugin {
 		} else if (action.equals("close")) {
 			Log.w("socket", "socket will close");
 			mstop = false;
+			callbackContext.success();
 			return true;
 		} else if (action.equals("send")) {
 			msg_send = args.getString(0);
@@ -56,9 +57,9 @@ public class socket extends CordovaPlugin {
 
 	public void socket_connect(final CallbackContext callbackContext) {
 		this.cordova.getThreadPool().execute(new Runnable() {
+
 			public void run() {
 				try {
-					Log.w("socket", "in socket");
 					newsocket = null;
 					newsocket = new Socket("219.147.26.62", 2047);
 					out = newsocket.getOutputStream();
@@ -69,30 +70,51 @@ public class socket extends CordovaPlugin {
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					callbackContext.error("");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					callbackContext.error("");
 				}
 				if (newsocket != null) {
 					callbackContext.success();
+					char[] buf = new char[4096];
 					while (mstop) {
 						try {
-							content = null;
-							content = in.readLine();
-							if (content != null) {
+							if(in.ready())
+							{
+								int len = in.read(buf);
+								if(len > 0)
+								{
+									content = "";
+									for(int i = 0;i<len;i++)
+									{
+										content += buf[i];
+									}
+									Log.e("socket", content);
+									Recv_msgs_list.add(content);
+								}
+							}
+							else
+							{
+								try {
+									Thread.sleep(200);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+							
+							/*
+							while ((content = in.readLine()) != null) {
 								Log.e("socket", content);
 								Recv_msgs_list.add(content);
-							}
+							}*/
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+
 					}
 					Log.e("socket", "mstop is false ");
 
@@ -105,9 +127,7 @@ public class socket extends CordovaPlugin {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
-				else
-				{
+				} else {
 					callbackContext.error("");
 				}
 
