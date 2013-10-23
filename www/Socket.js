@@ -1,4 +1,4 @@
-
+var exec = require('cordova/exec');
 module.exports ={
     socket_connect: function(successCallBack,errorCallBack) {
     	console.log('123456787654321');
