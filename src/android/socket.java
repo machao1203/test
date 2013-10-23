@@ -23,6 +23,8 @@ public class socket extends CordovaPlugin {
 	BufferedReader in = null;
 	Socket newsocket;
 	boolean mstop;
+	public static byte[] send_Buffer = new byte[512];
+	int send_length ;
 	String content = null, msg_send;
 	List<String> Recv_msgs_list = new ArrayList<String>();
 
@@ -39,10 +41,22 @@ public class socket extends CordovaPlugin {
 			return true;
 		} else if (action.equals("send")) {
 			msg_send = args.getString(0);
+			send_length = msg_send.length();
+			if(send_length%2 == 1)
+			{
+				msg_send +="0";
+			}
+			for(int i = 0,j = 0;i < send_length;i = i+2,j++)
+			{
+					String substr = msg_send.substring(i, i+2);
+					send_Buffer[j] = (byte) Integer.parseInt(substr,16);
+			}
+			send_length = send_length/2;	
+			
 			this.socket_send(callbackContext);
 			return true;
 		} else if (action.equals("rollpoling")) {
-			Log.w("socket", "socket poll111111111111");
+			//Log.w("socket", "socket poll111111111111");
 			if (Recv_msgs_list.size() > 0) {
 				Log.w("socket", "socket poll222222222222");
 				String msg = (String) Recv_msgs_list.get(0);
@@ -139,7 +153,7 @@ public class socket extends CordovaPlugin {
 		this.cordova.getThreadPool().execute(new Runnable() {
 			public void run() {
 				try {
-					out.write(msg_send.getBytes("utf-8"));
+					out.write(send_Buffer, 0, send_length);
 					callbackContext.success();
 					return;
 				} catch (UnknownHostException e) {
