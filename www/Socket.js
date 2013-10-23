@@ -1,4 +1,4 @@
-cordova.define("org.wdc.socket.socket", function(require, exports, module) {var exec = require('cordova/exec');
+
 module.exports ={
     socket_connect: function(successCallBack,errorCallBack) {
     	console.log('123456787654321');
@@ -16,4 +16,4 @@ module.exports ={
     socket_poll:function(successCallBack){
     	exec(successCallBack, null, "socket", "rollpoling", []);
     }
-    };});
+};
