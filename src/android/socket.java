@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -63,6 +64,41 @@ public class socket extends CordovaPlugin {
 				callbackContext.success(msg);
 				Recv_msgs_list.remove(0);
 				return true;
+			}
+		}else if (action.equals("hanzi")) {
+			
+			String hz  = args.getString(0);
+			Log.w("hanzi", hz);
+			int hz_len = hz.length();
+			int hz_effictive_len = 32;
+			byte[] hz_Buffer = new byte[32];
+			for(int i = 0,j = 0;i < hz_len;i = i+2,j++)
+			{
+					String substr = hz.substring(i, i+2);
+					if((substr.equals("00")) || (substr.equals("FF")) || (substr.equals("ff")))
+					{
+						hz_effictive_len = j;
+						break;
+					}
+					hz_Buffer[j] = (byte) Integer.parseInt(substr,16);
+					
+			}
+			
+			String HZ_str;
+			if(hz_effictive_len > 0)
+			{
+				byte hzs[] = new byte[hz_effictive_len];
+				for (int j = 0; j < hz_effictive_len; j++) {
+					hzs[j] = hz_Buffer[j];
+				}
+				try {
+					HZ_str = new String(hzs, "GB2312");
+					callbackContext.success(HZ_str);
+					return true;
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		callbackContext.error("false");
