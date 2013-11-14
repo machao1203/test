@@ -1,7 +1,8 @@
 var exec = require('cordova/exec');
 module.exports ={
-    socket_connect: function(successCallBack,errorCallBack) {
-        exec(successCallBack, errorCallBack, "socket", "connect", []);
+    
+socket_connect: function(successCallBack,errorCallBack) {
+        exec(successCallBack, errorCallBack, "socket", "connect", [ip_addr,ip_port]);
     },
     socket_close: function(successCallBack) {
     

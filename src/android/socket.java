@@ -22,6 +22,8 @@ import android.util.Log;
 public class socket extends CordovaPlugin {
 	OutputStream out = null;
 	BufferedReader in = null;
+	String ip_addr;
+	int ip_port;
 	Socket newsocket;
 	boolean mstop;
 	public static byte[] send_Buffer = new byte[512];
@@ -33,6 +35,9 @@ public class socket extends CordovaPlugin {
 	public boolean execute(String action, JSONArray args,
 			CallbackContext callbackContext) throws JSONException {
 		if (action.equals("connect")) {
+			ip_addr = args.getString(0);
+			ip_port = args.getInt(1);
+		
 			this.socket_connect(callbackContext);
 			return true;
 		} else if (action.equals("close")) {
@@ -111,7 +116,7 @@ public class socket extends CordovaPlugin {
 			public void run() {
 				try {
 					newsocket = null;
-					newsocket = new Socket("219.147.26.62", 2047);
+					newsocket = new Socket(ip_addr, ip_port);
 					out = newsocket.getOutputStream();
 					in = new BufferedReader(new InputStreamReader(newsocket
 							.getInputStream()));
