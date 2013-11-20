@@ -13,8 +13,8 @@ socket_connect: function(successCallBack,errorCallBack) {
  
         exec(successCallBack, errorCallBack, "socket", "send", [msg]);
     },
-    socket_poll:function(successCallBack){
-    	exec(successCallBack, null, "socket", "rollpoling", []);
+    socket_poll:function(successCallBack,errorCallBack,msg){
+    	exec(successCallBack, errorCallBack, "socket", "rollpoling", [msg]);
     },
     gb2312Tohanzi:function(successCallBack,errorCallBack,msg)
     {
