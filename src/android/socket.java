@@ -27,6 +27,7 @@ public class socket extends CordovaPlugin {
 	BufferedReader in = null;
 	String ip_addr;
 	int ip_port;
+	public static int SendInteval = 30000;
 	Socket newsocket;
 	boolean mstop;
 	public byte[] send_Buffer = new byte[512];
@@ -36,7 +37,7 @@ public class socket extends CordovaPlugin {
 	private static boolean socketclose = false; // 关闭连接标志位，true表示关闭，false表示连接
 	public static Timer Stimer = null, Rtimer = null;
 	public static boolean sendError = false;
-	public static int SendInteval = 10000;
+	
 
 	@Override
 	public boolean execute(String action, JSONArray args,
@@ -44,13 +45,30 @@ public class socket extends CordovaPlugin {
 		if (action.equals("connect")) {
 			ip_addr = args.getString(0);
 			ip_port = args.getInt(1);
-
+			SendInteval = args.getInt(2);
 			this.socket_connect(callbackContext);
 			return true;
 		} else if (action.equals("close")) {
 			Log.w("socket", "socket will close");
 			mstop = false;
 			callbackContext.success();
+			return true;
+		}else if (action.equals("setPara")) {
+			Log.w("socket", "设置地址及相关参数");
+			ip_addr = args.getString(0);
+			ip_port = args.getInt(1);
+			int tempxintiao = args.getInt(2);
+			if(tempxintiao != SendInteval)
+			{
+				SendInteval = tempxintiao;
+				if(Stimer!=null)
+				{
+					Stimer.cancel();
+					Stimer = new Timer();
+					Stimer.schedule(new MyTask(), 1000, SendInteval);
+				}
+			} 
+			callbackContext.success();				
 			return true;
 		} else if (action.equals("send")) {
 			msg_send = args.getString(0);
@@ -190,10 +208,18 @@ public class socket extends CordovaPlugin {
 						} else {
 							Log.e("SocketError", "回复超时，主动关闭连接");
 							try {
-								in.close();
-								out.close();
+								if (Rtimer != null) {
+									Rtimer.cancel();
+									Rtimer = null;
+								}
+								if (Stimer != null) {
+									Stimer.cancel();
+									Stimer = null;
+								}
 								if (newsocket != null) {
 									newsocket.close();
+									in.close();
+									out.close();
 								}
 						
 							} catch (IOException e) {
@@ -236,12 +262,6 @@ public class socket extends CordovaPlugin {
 					Log.e("socket", "mstop is false ");
 
 					try {
-						if (newsocket != null) {
-							newsocket.close();
-							in.close();
-							out.close();
-							newsocket = null;
-						}
 						if (Rtimer != null) {
 							Rtimer.cancel();
 							Rtimer = null;
@@ -250,6 +270,13 @@ public class socket extends CordovaPlugin {
 							Stimer.cancel();
 							Stimer = null;
 						}
+						if (newsocket != null) {
+							newsocket.close();
+							in.close();
+							out.close();
+							newsocket = null;
+						}
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -310,7 +337,7 @@ public class socket extends CordovaPlugin {
 			}
 			if (sendError) {
 				socketclose = true;
-				Log.w("send", "send error !");
+				Log.w("send", "send error!");
 				if(Stimer != null)
 				{
 					Stimer.cancel();
