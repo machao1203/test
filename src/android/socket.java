@@ -370,7 +370,7 @@ public class socket extends CordovaPlugin {
 				String substr = xintiao_send.substring(i, i + 2);
 				xintiao_Buffer[j] = (byte) Integer.parseInt(substr, 16);
 			}
-			xintiao_length = send_length / 2;
+			xintiao_length = xintiao_length / 2;
 			try {
 				out.write(xintiao_Buffer,0,xintiao_length);
 				sendError = false;
