@@ -27,14 +27,17 @@ public class socket extends CordovaPlugin {
 	BufferedReader in = null;
 	String ip_addr;
 	int ip_port;
-	public static int SendInteval = 30000;
+	public static int SendInteval = 60000;
 	Socket newsocket;
 	boolean mstop;
 	public byte[] send_Buffer = new byte[512];
-	static int send_length;
+	public static byte[] xintiao_Buffer = new byte[24];
+	static int send_length,xintiao_length;
 	String content = null, msg_send;
+	static String xintiao_send = "7FFBF7000170DC";;
 	List<String> Recv_msgs_list = new ArrayList<String>();
 	private static boolean socketclose = false; // 关闭连接标志位，true表示关闭，false表示连接
+	private static boolean reconnection = false;//true：重新建立连接
 	public static Timer Stimer = null, Rtimer = null;
 	public static boolean sendError = false;
 	
@@ -51,6 +54,15 @@ public class socket extends CordovaPlugin {
 		} else if (action.equals("close")) {
 			Log.w("socket", "socket will close");
 			mstop = false;
+			callbackContext.success();
+			return true;
+		}else if (action.equals("start_xintiao")) {
+			Log.w("socket", "心跳启动");
+			if (Stimer != null) {
+				Stimer.cancel();
+			}
+			Stimer = new Timer();
+			Stimer.schedule(new MyTask(), 1000, SendInteval);
 			callbackContext.success();
 			return true;
 		}else if (action.equals("setPara")) {
@@ -92,9 +104,10 @@ public class socket extends CordovaPlugin {
 				callbackContext.success("00");
 				return true;
 			}
-			else if(!socketclose && (showstatus == 0))
+			else if((!socketclose && (showstatus == 0)) ||reconnection)
 			{
 				Log.w("socket", "连接从异常变为正常");
+				reconnection = false;
 				callbackContext.success("11");
 				return true;
 			}
@@ -138,6 +151,38 @@ public class socket extends CordovaPlugin {
 					e.printStackTrace();
 				}
 			}
+		}else if (action.equals("hanzi2GB2312")) {
+
+			String hzstr = args.getString(0);
+			String GBstr = "";
+			Log.w("hanzi", hzstr);
+			int len = 0;
+			try {
+				len = hzstr.getBytes("GB2312").length;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			byte hzs[] = new byte[len];
+			try {
+				hzs = hzstr.getBytes("GB2312");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (len > 0) {
+				while(len > 0)
+				{
+					String hex = Integer.toHexString(hzs[len-1] & 0xFF);
+					if (hex.length() == 1) {
+						hex = "0" + hex;
+					}
+					GBstr += hex.toUpperCase();
+					len--;
+				}
+			} 
+			callbackContext.success(GBstr);
+			return true;
 		}
 		callbackContext.error("false");
 		return false; // Returning false results in a "MethodNotFound" error.
@@ -168,9 +213,8 @@ public class socket extends CordovaPlugin {
 				}
 				if (newsocket != null) {
 					callbackContext.success();
-					Stimer = new Timer();
+					
 					Rtimer = null;
-					Stimer.schedule(new MyTask(), 1000, SendInteval);
 					char[] buf = new char[4096];
 					while (mstop) {
 						if (!socketclose) {
@@ -182,11 +226,9 @@ public class socket extends CordovaPlugin {
 										for (int i = 0; i < len; i++) {
 											content += buf[i];
 										}
-										if (content.equals("AAAA")) {
-
-										} else {
-											Recv_msgs_list.add(content);
-										}
+										
+										Recv_msgs_list.add(content);
+										
 										if (Rtimer != null) { //接收到任何数据都要将接收计时器关闭
 											Rtimer.cancel();
 											Rtimer = null;
@@ -206,7 +248,7 @@ public class socket extends CordovaPlugin {
 								e.printStackTrace();
 							}
 						} else {
-							Log.e("SocketError", "回复超时，主动关闭连接");
+							Log.e("SocketError", "回复超时或发送失败，主动关闭连接");
 							try {
 								if (Rtimer != null) {
 									Rtimer.cancel();
@@ -244,10 +286,8 @@ public class socket extends CordovaPlugin {
 							}
 							if (newsocket != null) {
 								Log.e("SocketError", "重新连接成功");
-								socketclose = false;
-								Rtimer = null;
-								Stimer = new Timer();
-								Stimer.schedule(new MyTask(), 1000, SendInteval);
+								reconnection = true;
+								socketclose  = false;
 							} else {
 								Log.e("SocketError", "重新连接失败");
 								try {
@@ -294,14 +334,15 @@ public class socket extends CordovaPlugin {
 			public void run() {
 				try {
 					out.write(send_Buffer, 0, send_length);
-					if(Stimer != null)
+					Log.w("send", "send 有效数据 !");
+					//心跳暂时采用固定间隔即可
+					/*if(Stimer != null) 
 					{
 						Stimer.cancel();
 						Stimer = new Timer();
 						Stimer.schedule(new MyTask(), SendInteval, SendInteval);
-					}
+					}*/
 					if (Rtimer == null) {
-						Log.w("send", "send 有效数据 !");
 						Rtimer = new Timer();
 						Rtimer.schedule(new RTask(), SendInteval * 2);
 					}
@@ -323,8 +364,15 @@ public class socket extends CordovaPlugin {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
+			xintiao_length = xintiao_send.length();
+
+			for (int i = 0, j = 0; i < xintiao_length; i = i + 2, j++) {
+				String substr = xintiao_send.substring(i, i + 2);
+				xintiao_Buffer[j] = (byte) Integer.parseInt(substr, 16);
+			}
+			xintiao_length = send_length / 2;
 			try {
-				out.write(("AAAA").getBytes("utf-8"));
+				out.write(xintiao_Buffer,0,xintiao_length);
 				sendError = false;
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
@@ -348,7 +396,7 @@ public class socket extends CordovaPlugin {
 					Rtimer = null;
 				}
 			} else {
-				Log.w("send", "send SUCCESS !");
+				Log.w("send", "发送心跳成功!");
 				if (Rtimer == null) {
 					Log.w("send", "send 222 !");
 					Rtimer = new Timer();

@@ -2,10 +2,12 @@ var exec = require('cordova/exec');
 module.exports ={
     
     socket_connect: function(successCallBack,errorCallBack) {
-        exec(successCallBack, errorCallBack, "socket", "connect", [ip_addr,ip_port,ip_xintiao]);
+        var xt_cycle = ip_xintiao*1000;
+        exec(successCallBack, errorCallBack, "socket", "connect", [ip_addr,ip_port,xt_cycle]);
     },
     socket_setPara: function() {
-        exec(null, null, "socket", "setPara", [ip_addr,ip_port,ip_xintiao]);
+        var xt_cycle = ip_xintiao*1000;
+        exec(null, null, "socket", "setPara", [ip_addr,ip_port,xt_cycle]);
     },
     socket_close: function(successCallBack) {
     
@@ -22,5 +24,12 @@ module.exports ={
     gb2312Tohanzi:function(successCallBack,errorCallBack,msg)
     {
         exec(successCallBack, errorCallBack, "socket", "hanzi", [msg]);
+    },
+    hanzi2GB2312:function(successCallBack,errorCallBack,msg){
+    	exec(successCallBack, errorCallBack, "socket", "hanzi2GB2312", [msg]);
+    },
+    start_xintiao:function(successCallBack,errorCallBack)
+    {
+        exec(successCallBack, errorCallBack, "socket", "start_xintiao",[]);
     },
 };
