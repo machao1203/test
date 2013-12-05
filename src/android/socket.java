@@ -8,6 +8,7 @@ import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -24,13 +25,15 @@ import android.util.Log;
 
 public class socket extends CordovaPlugin {
 	static OutputStream out = null;
-	BufferedReader in = null;
+	InputStream inStream = null;
+	BufferedReader in;
 	String ip_addr;
 	int ip_port;
 	public static int SendInteval = 60000;
 	Socket newsocket;
 	boolean mstop;
 	public byte[] send_Buffer = new byte[512];
+	byte[] recv_Buffer = new byte[4096];
 	public static byte[] xintiao_Buffer = new byte[24];
 	static int send_length,xintiao_length;
 	String content = null, msg_send;
@@ -60,6 +63,7 @@ public class socket extends CordovaPlugin {
 			Log.w("socket", "心跳启动");
 			if (Stimer != null) {
 				Stimer.cancel();
+				Stimer = null;
 			}
 			Stimer = new Timer();
 			Stimer.schedule(new MyTask(), 1000, SendInteval);
@@ -200,7 +204,8 @@ public class socket extends CordovaPlugin {
 					out = newsocket.getOutputStream();
 					in = new BufferedReader(new InputStreamReader(newsocket
 							.getInputStream()));
-					// out.write(("i am phone").getBytes("utf-8"));
+					inStream = newsocket.getInputStream();
+					socketclose = false;
 					mstop = true;
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
@@ -215,16 +220,23 @@ public class socket extends CordovaPlugin {
 					callbackContext.success();
 					
 					Rtimer = null;
-					char[] buf = new char[4096];
+					
 					while (mstop) {
 						if (!socketclose) {
 							try {
 								if (in.ready()) {
-									int len = in.read(buf);
+									//int len = in.read(buf);
+									int len = inStream.read(recv_Buffer);
+									Log.e("socket len", len+"");
 									if (len > 0) {
 										content = "";
 										for (int i = 0; i < len; i++) {
-											content += buf[i];
+									
+											String hex = Integer.toHexString(recv_Buffer[i] & 0xFF);
+											if (hex.length() == 1) {
+												hex = "0" + hex;
+											}
+											content += hex.toUpperCase();
 										}
 										
 										Recv_msgs_list.add(content);
@@ -233,7 +245,6 @@ public class socket extends CordovaPlugin {
 											Rtimer.cancel();
 											Rtimer = null;
 										}
-										Log.e("socket", content);
 									}
 								} else {
 									try {
@@ -398,7 +409,6 @@ public class socket extends CordovaPlugin {
 			} else {
 				Log.w("send", "发送心跳成功!");
 				if (Rtimer == null) {
-					Log.w("send", "send 222 !");
 					Rtimer = new Timer();
 					Rtimer.schedule(new RTask(), SendInteval * 2);
 				}
@@ -417,6 +427,11 @@ public class socket extends CordovaPlugin {
 			if (Stimer != null) {
 				Stimer.cancel();
 				Stimer = null;
+			}
+			if(Rtimer != null)
+			{
+				Rtimer.cancel();
+				Rtimer = null;
 			}
 		}
 	}
