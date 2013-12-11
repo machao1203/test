@@ -21,13 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
+@SuppressLint("DefaultLocale")
 public class socket extends CordovaPlugin {
 	static OutputStream out = null;
 	InputStream inStream = null;
 	BufferedReader in;
 	String ip_addr;
+	String recv_msg;
 	int ip_port;
 	public static int SendInteval = 60000;
 	Socket newsocket;
@@ -40,7 +43,6 @@ public class socket extends CordovaPlugin {
 	static String xintiao_send = "7FFBF7000170DC";;
 	List<String> Recv_msgs_list = new ArrayList<String>();
 	private static boolean socketclose = false; // 关闭连接标志位，true表示关闭，false表示连接
-	private static boolean reconnection = false;//true：重新建立连接
 	public static Timer Stimer = null, Rtimer = null;
 	public static boolean sendError = false;
 	
@@ -100,26 +102,16 @@ public class socket extends CordovaPlugin {
 
 			this.socket_send(callbackContext);
 			return true;
-		} else if (action.equals("rollpoling")) {
-			int showstatus = args.getInt(0);
-			if(socketclose && (showstatus == 1))
-			{
-				Log.w("socket", "连接从正常变为异常");
-				callbackContext.success("00");
-				return true;
-			}
-			else if((!socketclose && (showstatus == 0)) ||reconnection)
-			{
-				Log.w("socket", "连接从异常变为正常");
-				reconnection = false;
-				callbackContext.success("11");
-				return true;
-			}
-			else if (Recv_msgs_list.size() > 0) {
+		} else if (action.equals("read_data")) {
+			int size = Recv_msgs_list.size();
+			if (size > 0) {
+				recv_msg = "";
 				Log.w("socket", "有数据上传");
-				String msg = (String) Recv_msgs_list.get(0);
-				callbackContext.success(msg);
-				Recv_msgs_list.remove(0);
+				for (int j = 0; j < size; j++) {
+					recv_msg += (String) Recv_msgs_list.get(j);
+				}
+				Recv_msgs_list.clear();
+				callbackContext.success(recv_msg);
 				return true;
 			}
 		} else if (action.equals("hanzi")) {
@@ -192,6 +184,7 @@ public class socket extends CordovaPlugin {
 		return false; // Returning false results in a "MethodNotFound" error.
 	}
 
+	@SuppressLint("DefaultLocale")
 	public void socket_connect(final CallbackContext callbackContext) {
 		this.cordova.getThreadPool().execute(new Runnable() {
 
@@ -240,8 +233,8 @@ public class socket extends CordovaPlugin {
 										}
 										
 										Recv_msgs_list.add(content);
-										
-										if (Rtimer != null) { //接收到任何数据都要将接收计时器关闭
+										webView.sendJavascript("read_java_data()");
+										if (Rtimer != null) { // 接收到任何数据都要将接收计时器关闭
 											Rtimer.cancel();
 											Rtimer = null;
 										}
@@ -297,8 +290,8 @@ public class socket extends CordovaPlugin {
 							}
 							if (newsocket != null) {
 								Log.e("SocketError", "重新连接成功");
-								reconnection = true;
-								socketclose  = false;
+								socketclose = false;
+								webView.sendJavascript("socket_reconneced()");
 							} else {
 								Log.e("SocketError", "重新连接失败");
 								try {
@@ -371,7 +364,7 @@ public class socket extends CordovaPlugin {
 		});
 	}
 
-	static class MyTask extends java.util.TimerTask {
+	class MyTask extends java.util.TimerTask {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
@@ -406,6 +399,7 @@ public class socket extends CordovaPlugin {
 					Rtimer.cancel();
 					Rtimer = null;
 				}
+				webView.sendJavascript("socket_error()");
 			} else {
 				Log.w("send", "发送心跳成功!");
 				if (Rtimer == null) {
@@ -416,12 +410,11 @@ public class socket extends CordovaPlugin {
 		}
 	}
 
-	static class RTask extends java.util.TimerTask {
+	class RTask extends java.util.TimerTask {
 
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			Rtimer = null;
 			Log.w("recv", "recv timeout !");
 			socketclose = true;
 			if (Stimer != null) {
@@ -433,6 +426,7 @@ public class socket extends CordovaPlugin {
 				Rtimer.cancel();
 				Rtimer = null;
 			}
+			webView.sendJavascript("socket_error()");
 		}
 	}
 }

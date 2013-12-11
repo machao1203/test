@@ -18,8 +18,8 @@ module.exports ={
  
         exec(successCallBack, errorCallBack, "socket", "send", [msg]);
     },
-    socket_poll:function(successCallBack,errorCallBack,msg){
-    	exec(successCallBack, errorCallBack, "socket", "rollpoling", [msg]);
+    socket_read_data:function(successCallBack,errorCallBack,msg){
+    	exec(successCallBack, errorCallBack, "socket", "read_data", [msg]);
     },
     gb2312Tohanzi:function(successCallBack,errorCallBack,msg)
     {
